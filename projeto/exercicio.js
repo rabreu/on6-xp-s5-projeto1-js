@@ -38,6 +38,8 @@ class Pedido {
             this.nome.push(produto[0].nome)
             this.preco.push(parseFloat(produto[0].preco))
             this.quantidade.push(quantidade)
+        } else {
+            console.log("Produto não encontrado.")
         }
     }
 
@@ -50,7 +52,7 @@ class Pedido {
         this.desconto = this.subtotal * porcentagem/100
     }
 
-    calcularTotal(total) {
+    calcularTotal() {
         this.total = this.subtotal - this.desconto
     }
 }
