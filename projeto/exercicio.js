@@ -22,22 +22,48 @@ const read = require('readline-sync')
 class Pedido {
     constructor() {
         this.id = []
+        this.nome = []
+        this.preco = []
         this.quantidade = []
+        this.subtotal = 0
+        this.desconto = 0
+        this.total = 0
+        this.data = new Date().toLocaleDateString('pt-BR')
     }
 
     adicionarProduto(id, quantidade) {
-        this.id.push(id)
-        this.quantidade.push(quantidade)
+        const produto = produtos.filter(item => item.id === id)
+        if(typeof produto[0] != 'undefined') {
+            this.id.push(id)
+            this.nome.push(produto[0].nome)
+            this.preco.push(parseFloat(produto[0].preco))
+            this.quantidade.push(quantidade)
+        }
+    }
+
+    calcularSubTotal() {
+        for(let i = 0; i < this.id.length ; i++)
+            this.subtotal =+ this.subtotal + (this.preco[i] * this.quantidade[i])
+    }
+
+    calcularDesconto(porcentagem) {
+        this.desconto = this.subtotal * porcentagem/100
+    }
+
+    calcularTotal(total) {
+        this.total = this.subtotal - this.desconto
     }
 }
 
 const pedido = new Pedido();
-console.log("Inclusão de produtos. Digite [-1] para sair.")
+console.log("Inclusão de produtos. Digite [-1] para terminar.")
 while(true) {
-    const id = parseInt(read.question("Qual o produto (id)? "))
+    const id = parseInt(read.question("Código do produto (id): "))
     if(id < 0)
         break;
-    const quantidade = parseInt(read.question("Quantidade? "))
+    const quantidade = parseInt(read.question("Quantidade: "))
+    if(quantidade < 0)
+        break;
     pedido.adicionarProduto(id, quantidade)
 }
 
@@ -46,11 +72,11 @@ while(true) {
 exercicio(3)
 
 const cupom = read.question("Possui cupom de desconto? ").toString()
-let desconto = 0
+let porcentagem = 0
 switch(cupom) {
     case "10":
         console.log("Você tem 10% de desconto!")
-        desconto = 10
+        porcentagem = 10
         break;
     default:
         console.log("Sem desconto.")
@@ -60,19 +86,16 @@ switch(cupom) {
 // Calcular o valor do subtotal (sem considerar o desconto)
 exercicio(4)
 
-let subtotal = 0
-for(let i = 0; i < pedido.id.length ; i++) {
-    const produto = produtos.filter(item => item.id === pedido.id[i])
-    subtotal =+ produto[0].preco * pedido.quantidade[i]
-}
-console.log(`Subtotal: R$ ${subtotal.toFixed(2)}`)
+pedido.calcularSubTotal()
+console.log(`Subtotal: R$ ${pedido.subtotal.toFixed(2)}`)
 
 // Exercício 5
 // Calcular o valor total (considerando o desconto do cupom)
 exercicio(5)
 
-const total = subtotal - (subtotal * desconto/100)
-console.log(`Total: R$ ${total.toFixed(2)}`)
+pedido.calcularDesconto(porcentagem)
+pedido.calcularTotal()
+console.log(`Total: R$ ${pedido.total.toFixed(2)}`)
 
 // Exercício 6
 // Apresentar no console:
@@ -82,3 +105,16 @@ console.log(`Total: R$ ${total.toFixed(2)}`)
 // -o valor total em Reais
 // -a data da compra
 exercicio(6)
+
+let pedidos = []
+pedidos.push(pedido)
+
+for(let i = 0 ; i < pedidos.length ; i++) {
+    for(let j = 0 ; j < pedidos[i].preco.length ; j++)
+        pedidos[i].preco[j] = "R$ " + pedidos[i].preco[j].toFixed(2)
+    pedidos[i].subtotal = "R$ " + pedidos[i].subtotal.toFixed(2)
+    pedidos[i].desconto = "R$ " + pedidos[i].desconto.toFixed(2)
+    pedidos[i].total = "R$ " + pedidos[i].total.toFixed(2)
+}
+
+console.table(pedidos)
