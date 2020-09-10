@@ -63,9 +63,14 @@ while(true) {
     const id = parseInt(read.question("Código do produto (id): "))
     if(id < 0)
         break;
-    const quantidade = parseInt(read.question("Quantidade: "))
-    if(quantidade < 0)
-        break;
+
+    let quantidade;
+    do {
+        quantidade = parseInt(read.question("Quantidade: "))
+        if(quantidade < 1)
+            console.log("Quantidade precisa ser maior que 0.")
+    } while(quantidade < 1)
+
     pedido.adicionarProduto(id, quantidade)
 }
 
