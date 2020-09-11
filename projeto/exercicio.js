@@ -1,29 +1,13 @@
-function exercicio(num) {
-    console.log(`============================================================`)
-    console.log(`==================== EXERCÍCIO ${num} ===========================`)
-    console.log(`============================================================`)
-}
-
-// Exercício 1
-// Listar no console uma tabela contendo os produtos em ordem crescente de preço (do menor ao maior). Utilize a lista contida no arquivo database.js
-exercicio(1)
-
 const db = require('./database.js')
 const { produtos } = db
 produtos.sort((a, b) => a.preco - b.preco)
 console.table(produtos)
 
-// Exercício 2
-// Receber via terminal as entradas de id e quantidade dos produtos a serem adquiridos.
-exercicio(2)
-
 const read = require('readline-sync')
 
 class Pedido {
     constructor() {
-        this.id = []
-        this.nome = []
-        this.preco = []
+        this.produtos = []
         this.quantidade = []
         this.subtotal = 0
         this.desconto = 0
@@ -34,9 +18,7 @@ class Pedido {
     adicionarProduto(id, quantidade) {
         const produto = produtos.filter(item => item.id === id)
         if(typeof produto[0] != 'undefined') {
-            this.id.push(id)
-            this.nome.push(produto[0].nome)
-            this.preco.push(parseFloat(produto[0].preco))
+            this.produtos.push(produto[0])
             this.quantidade.push(quantidade)
         } else {
             console.log("Produto não encontrado.")
@@ -44,8 +26,8 @@ class Pedido {
     }
 
     calcularSubTotal() {
-        for(let i = 0; i < this.id.length ; i++)
-            this.subtotal =+ this.subtotal + (this.preco[i] * this.quantidade[i])
+        for(let i = 0; i < this.produtos.length ; i++) 
+            this.subtotal =+ this.subtotal + (parseFloat(this.produtos[i].preco) * this.quantidade[i])
     }
 
     calcularDesconto(porcentagem) {
@@ -58,11 +40,10 @@ class Pedido {
 }
 
 const pedido = new Pedido();
+let adicionarMaisProduto
 console.log("Inclusão de produtos. Digite [-1] para terminar.")
-while(true) {
+do {
     const id = parseInt(read.question("Código do produto (id): "))
-    if(id < 0)
-        break;
 
     let quantidade;
     do {
@@ -72,11 +53,8 @@ while(true) {
     } while(quantidade < 1)
 
     pedido.adicionarProduto(id, quantidade)
-}
-
-// Exercício 3
-// Perguntar se a cliente possue cupom de desconto. Caso a cliente digite 10, significa que terá 10% de desconto.
-exercicio(3)
+    
+} while(read.question("Deseja adicionar mais produtos? (S/N) ").toUpperCase() != 'N')
 
 const cupom = read.question("Possui cupom de desconto? ").toString()
 let porcentagem = 0
@@ -89,39 +67,26 @@ switch(cupom) {
         console.log("Sem desconto.")
 }
 
-// Exercício 4
-// Calcular o valor do subtotal (sem considerar o desconto)
-exercicio(4)
+let pedidos = [];
+
+for(let i = 0 ; i < pedido.produtos.length ; i++) {
+    p = {
+        id: i,
+        data: pedido.data,
+        nome: pedido.produtos[i].nome,
+        descricao: pedido.produtos[i].descricao,
+        categoria: pedido.produtos[i].categoria,
+        preco: pedido.produtos[i].preco,
+        quantidade: pedido.quantidade[i],
+    }
+    pedidos.push(p)
+}
+
+console.table(pedidos)
 
 pedido.calcularSubTotal()
 console.log(`Subtotal: R$ ${pedido.subtotal.toFixed(2)}`)
 
-// Exercício 5
-// Calcular o valor total (considerando o desconto do cupom)
-exercicio(5)
-
 pedido.calcularDesconto(porcentagem)
 pedido.calcularTotal()
 console.log(`Total: R$ ${pedido.total.toFixed(2)}`)
-
-// Exercício 6
-// Apresentar no console:
-// -a tabela contendo a lista de produtos adquiridos, incluindo a quantidade de cada produto
-// -o valor subtotal em Reais
-// -o valor do desconto em Reais
-// -o valor total em Reais
-// -a data da compra
-exercicio(6)
-
-let pedidos = []
-pedidos.push(pedido)
-
-for(let i = 0 ; i < pedidos.length ; i++) {
-    for(let j = 0 ; j < pedidos[i].preco.length ; j++)
-        pedidos[i].preco[j] = "R$ " + pedidos[i].preco[j].toFixed(2)
-    pedidos[i].subtotal = "R$ " + pedidos[i].subtotal.toFixed(2)
-    pedidos[i].desconto = "R$ " + pedidos[i].desconto.toFixed(2)
-    pedidos[i].total = "R$ " + pedidos[i].total.toFixed(2)
-}
-
-console.table(pedidos)
