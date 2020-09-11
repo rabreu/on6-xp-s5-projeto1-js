@@ -62,7 +62,7 @@ class Pedido {
 
 const pedido = new Pedido();
 let adicionarMaisProduto
-console.log("Inclusão de produtos. Digite [-1] para terminar.")
+console.log("Inclusão de produtos.")
 do {
     const id = parseInt(read.question("Código do produto (id): "))
 
