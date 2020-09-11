@@ -41,6 +41,23 @@ class Pedido {
     calcularTotal() {
         this.total = this.subtotal - this.desconto
     }
+
+    exibirPedido() {
+        let pedido = [];
+        for(let i = 0 ; i < this.produtos.length ; i++) {
+            p = {
+                id: this.produtos[i].id,
+                data: this.data,
+                nome: this.produtos[i].nome,
+                descricao: this.produtos[i].descricao,
+                categoria: this.produtos[i].categoria,
+                preco: this.produtos[i].preco,
+                quantidade: this.quantidade[i],
+            }
+            pedido.push(p)
+        }
+        console.table(pedido)
+    }
 }
 
 const pedido = new Pedido();
@@ -86,7 +103,7 @@ for(let i = 0 ; i < pedido.produtos.length ; i++) {
     pedidos.push(p)
 }
 
-console.table(pedidos)
+pedido.exibirPedido()
 
 pedido.calcularSubTotal()
 console.log(`Subtotal: R$ ${pedido.subtotal.toFixed(2)}`)
