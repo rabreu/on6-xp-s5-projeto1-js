@@ -88,21 +88,6 @@ switch(cupom) {
         console.log("Sem desconto.")
 }
 
-let pedidos = [];
-
-for(let i = 0 ; i < pedido.produtos.length ; i++) {
-    p = {
-        id: i,
-        data: pedido.data,
-        nome: pedido.produtos[i].nome,
-        descricao: pedido.produtos[i].descricao,
-        categoria: pedido.produtos[i].categoria,
-        preco: pedido.produtos[i].preco,
-        quantidade: pedido.quantidade[i],
-    }
-    pedidos.push(p)
-}
-
 pedido.exibirPedido()
 
 pedido.calcularSubTotal()
